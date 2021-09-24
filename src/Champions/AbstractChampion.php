@@ -4,8 +4,11 @@ namespace App\Champions;
 
 use App\Abilities\AbstractAbility;
 
-class Champion
+abstract class AbstractChampion
 {
+    const TYPE_KNIGHT = 'knight';
+    const TYPE_MONSTER = 'monster';
+
     /** @var string */
     protected $name;
 
@@ -24,6 +27,9 @@ class Champion
     /** @var int */
     protected $luck;
 
+    /** @var string */
+    protected $type;
+
     /** @var AbstractAbility[] */
     protected $abilities = [];
 
@@ -37,9 +43,9 @@ class Champion
 
     /**
      * @param string $name
-     * @return Champion
+     * @return AbstractChampion
      */
-    public function setName(string $name): Champion
+    public function setName(string $name): AbstractChampion
     {
         $this->name = $name;
         return $this;
@@ -55,9 +61,9 @@ class Champion
 
     /**
      * @param int $health
-     * @return Champion
+     * @return AbstractChampion
      */
-    public function setHealth(int $health): Champion
+    public function setHealth(int $health): AbstractChampion
     {
         $this->health = $health;
         return $this;
@@ -73,9 +79,9 @@ class Champion
 
     /**
      * @param int $strength
-     * @return Champion
+     * @return AbstractChampion
      */
-    public function setStrength(int $strength): Champion
+    public function setStrength(int $strength): AbstractChampion
     {
         $this->strength = $strength;
         return $this;
@@ -91,9 +97,9 @@ class Champion
 
     /**
      * @param int $defence
-     * @return Champion
+     * @return AbstractChampion
      */
-    public function setDefence(int $defence): Champion
+    public function setDefence(int $defence): AbstractChampion
     {
         $this->defence = $defence;
         return $this;
@@ -109,9 +115,9 @@ class Champion
 
     /**
      * @param int $speed
-     * @return Champion
+     * @return AbstractChampion
      */
-    public function setSpeed(int $speed): Champion
+    public function setSpeed(int $speed): AbstractChampion
     {
         $this->speed = $speed;
         return $this;
@@ -127,9 +133,9 @@ class Champion
 
     /**
      * @param int $luck
-     * @return Champion
+     * @return AbstractChampion
      */
-    public function setLuck(int $luck): Champion
+    public function setLuck(int $luck): AbstractChampion
     {
         $this->luck = $luck;
         return $this;
@@ -144,25 +150,30 @@ class Champion
     }
 
     /**
-     * @param AbstractAbility $ability
-     * @return Champion
+     * @param AbstractAbility[] $abilities
+     * @return AbstractChampion
      */
-    public function addAbility(AbstractAbility $ability): Champion
+    public function setAbilities(array $abilities): AbstractChampion
     {
-        $this->abilities[$ability->getClassName()] = $ability;
+        $this->abilities = $abilities;
         return $this;
     }
 
     /**
-     * @param AbstractAbility[] $abilities
-     * @return Champion
+     * @return string
      */
-    public function setAbilities(array $abilities): Champion
+    public function getType(): string
     {
-        foreach ($abilities as $ability) {
-            $this->addAbility($ability);
-        }
-        return $this;
+        return $this->type;
     }
 
+    /**
+     * @param string $type
+     * @return AbstractChampion
+     */
+    public function setType(string $type): AbstractChampion
+    {
+        $this->type = $type;
+        return $this;
+    }
 }
