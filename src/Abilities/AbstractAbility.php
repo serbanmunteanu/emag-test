@@ -46,14 +46,6 @@ abstract class AbstractAbility implements AbilityInterface
     }
 
     /**
-     * @return string
-     */
-    public static function getClassName(): string
-    {
-        return static::class;
-    }
-
-    /**
      * @return float
      */
     public function getPower(): float

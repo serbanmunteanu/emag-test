@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Champions\Champion;
+use App\Output\OutputService;
 use Exception;
 
 class Game
@@ -13,19 +14,27 @@ class Game
     /** @var Champion */
     protected $defender;
 
-    /** @var int  */
+    /** @var Champion */
+    protected $winner;
+
+    /** @var int */
     protected $round = 1;
 
     /** @var int */
     protected $roundsNumber;
 
+    /** @var OutputService */
+    protected $outputService;
+
     /**
      * Game constructor.
-     * @param int $roundsNumber
+     * @param array $gameConfig
+     * @param OutputService $outputService
      */
-    public function __construct(int $roundsNumber)
+    public function __construct(array $gameConfig, OutputService $outputService)
     {
-        $this->roundsNumber = $roundsNumber;
+        $this->roundsNumber = $gameConfig['roundsNumber'];
+        $this->outputService = $outputService;
     }
 
     /**
@@ -35,10 +44,15 @@ class Game
      */
     public function start(Champion $champion1, Champion $champion2): void
     {
-        $this->determineFirstAttack($champion1, $champion2);
+        $this->outputService->write('Game started');
 
-        $round = new Round();
+        $this->determineFirstAttack($champion1, $champion2);
+        $this->outputService->write("First attacker is " . $this->getAttacker()->getName());
+
+        $round = new Round($this->outputService);
         while (!$this->isGameOver()) {
+            $this->outputService->write("Round " . $this->getRound() . " started");
+
             $round->fight($this->getAttacker(), $this->getDefender());
 
             $this
@@ -57,6 +71,14 @@ class Game
     }
 
     /**
+     * @return int
+     */
+    public function getRound(): int
+    {
+        return $this->round;
+    }
+
+    /**
      * @param Champion $champion1
      * @param Champion $champion2
      * @return Game
@@ -64,24 +86,24 @@ class Game
      */
     protected function determineFirstAttack(Champion $champion1, Champion $champion2): Game
     {
-        if($champion1->getSpeed() > $champion2->getSpeed()) {
+        if ($champion1->getSpeed() > $champion2->getSpeed()) {
             $this->setAttacker($champion1);
             $this->setDefender($champion2);
         }
 
-        if($champion1->getSpeed() < $champion2->getSpeed()) {
+        if ($champion1->getSpeed() < $champion2->getSpeed()) {
             $this->setAttacker($champion2);
             $this->setDefender($champion1);
         } elseif ($champion1->getSpeed() == $champion2->getSpeed()) {
-            if($champion1->getLuck() > $champion2->getLuck()) {
+            if ($champion1->getLuck() > $champion2->getLuck()) {
                 $this->setAttacker($champion1);
                 $this->setDefender($champion2);
             }
-            if($champion1->getLuck() < $champion2->getLuck()) {
+            if ($champion1->getLuck() < $champion2->getLuck()) {
                 $this->setAttacker($champion2);
                 $this->setDefender($champion1);
             }
-            if($champion1->getLuck() == $champion2->getLuck()) {
+            if ($champion1->getLuck() == $champion2->getLuck()) {
                 throw new Exception('Case not specified in the requirements.');
             }
         }
@@ -106,19 +128,40 @@ class Game
      */
     protected function isGameOver(): bool
     {
-        if (!$this->attacker->isAlive()) {
+        if (!$this->getAttacker()->isAlive()) {
+            $this->outputService->write('The winner is ' . $this->getDefender()->getName());
             return true;
         }
 
-        if (!$this->defender->isAlive()) {
+        if (!$this->getDefender()->isAlive()) {
+            $this->outputService->write('The winner is ' . $this->getAttacker()->getName());
             return true;
         }
 
         if ($this->round > $this->roundsNumber) {
+            $this->determineWinner();
+            if ($this->winner) {
+                $this->outputService->write('The winner is ' . $this->getWinner()->getName());
+            } else {
+                $this->outputService->write('Tie game');
+            }
             return true;
         }
 
         return false;
+    }
+
+    /**
+     *
+     */
+    protected function determineWinner(): void
+    {
+        if ($this->getAttacker()->getHealth() > $this->getDefender()->getHealth()) {
+            $this->setWinner($this->getAttacker());
+        }
+        if ($this->getAttacker()->getHealth() < $this->getDefender()->getHealth()) {
+            $this->setWinner($this->getDefender());
+        }
     }
 
     /**
@@ -155,5 +198,23 @@ class Game
     public function getDefender(): Champion
     {
         return $this->defender;
+    }
+
+    /**
+     * @return Champion
+     */
+    public function getWinner(): Champion
+    {
+        return $this->winner;
+    }
+
+    /**
+     * @param Champion $winner
+     * @return Game
+     */
+    public function setWinner(Champion $winner): Game
+    {
+        $this->winner = $winner;
+        return $this;
     }
 }

@@ -103,7 +103,7 @@ class ChampionBuilder implements BuilderInterface
     /**
      * @return ChampionBuilder
      */
-    public function setAbilities(): ChampionBuilder
+    public function setModelAbilities(): ChampionBuilder
     {
         $abilities = $this->loadAbilities();
         if (!empty($abilities)) {

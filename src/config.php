@@ -4,6 +4,7 @@ return [
     'game' => [
         'roundsNumber' => 20
     ],
+    'output' => 'cli', // switch with 'log' for writing to file
     'abilities' => [
         [
             'name' => 'Rapid Strike',

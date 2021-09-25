@@ -7,15 +7,21 @@ use App\Abilities\AbilityFactory;
 use App\Champions\Builder\ChampionBuilder;
 use App\Champions\Builder\Director;
 use App\Champions\Champion;
+use App\Output\Adapters\CliOutput;
+use App\Output\Adapters\LogOutput;
+use App\Output\OutputService;
 use Exception;
 
-class Application {
-
+class Application
+{
     /** @var mixed */
     protected $config;
 
     /** @var Game */
     protected $game;
+
+    /** @var OutputService */
+    protected $output;
 
     /** @var Champion[] */
     protected $knights = [];
@@ -42,6 +48,7 @@ class Application {
         $this
             ->loadAbilities()
             ->loadChampions()
+            ->loadOutput()
             ->loadGame();
     }
 
@@ -94,7 +101,28 @@ class Application {
      */
     protected function loadGame(): Application
     {
-        $this->game = new Game($this->config['game']['roundsNumber']);
+        $this->game = new Game($this->config['game'], $this->getOutput());
+        return $this;
+    }
+
+    /**
+     * @return Application
+     * @throws Exception
+     */
+    protected function loadOutput(): Application
+    {
+        $adapterSetting = $this->config['output'];
+        switch ($adapterSetting) {
+            case 'cli':
+                $adapter = new CliOutput();
+                break;
+            case 'log':
+                $adapter = new LogOutput();
+                break;
+            default:
+                throw new Exception('Adapter not supported.');
+        }
+        $this->setOutput(new OutputService($adapter));
         return $this;
     }
 
@@ -140,5 +168,23 @@ class Application {
     public function getMonsters(): array
     {
         return $this->monsters;
+    }
+
+    /**
+     * @return OutputService
+     */
+    public function getOutput(): OutputService
+    {
+        return $this->output;
+    }
+
+    /**
+     * @param OutputService $output
+     * @return Application
+     */
+    public function setOutput(OutputService $output): Application
+    {
+        $this->output = $output;
+        return $this;
     }
 }

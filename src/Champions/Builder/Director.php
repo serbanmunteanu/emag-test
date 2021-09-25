@@ -17,7 +17,7 @@ class Director {
         return $builder
             ->createModel()
             ->loadModelWithStats()
-            ->setAbilities()
+            ->setModelAbilities()
             ->getModel();
     }
 }

@@ -10,7 +10,7 @@ interface BuilderInterface
 
     public function loadModelWithStats(): ChampionBuilder;
 
-    public function setAbilities(): ChampionBuilder;
+    public function setModelAbilities(): ChampionBuilder;
 
     public function getModel(): Champion;
 }
