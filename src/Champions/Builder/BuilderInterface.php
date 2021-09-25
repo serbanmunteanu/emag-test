@@ -2,16 +2,15 @@
 
 namespace App\Champions\Builder;
 
-use App\Abilities\Ability;
-use App\Champions\AbstractChampion;
+use App\Champions\Champion;
 
 interface BuilderInterface
 {
-    public function createModel(): AbstractChampionBuilder;
+    public function createModel(): ChampionBuilder;
 
-    public function loadModelWithStats(): AbstractChampionBuilder;
+    public function loadModelWithStats(): ChampionBuilder;
 
-    public function setAbilities(): AbstractChampionBuilder;
+    public function setAbilities(): ChampionBuilder;
 
-    public function getModel(): AbstractChampion;
+    public function getModel(): Champion;
 }

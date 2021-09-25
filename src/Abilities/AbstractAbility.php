@@ -4,6 +4,9 @@ namespace App\Abilities;
 
 abstract class AbstractAbility implements AbilityInterface
 {
+    const TYPE_ATTACK = 'attack';
+    const TYPE_DEFENCE = 'defence';
+
     /** @var int */
     protected $probabilityToActivate;
 

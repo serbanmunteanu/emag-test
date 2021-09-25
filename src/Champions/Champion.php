@@ -4,7 +4,7 @@ namespace App\Champions;
 
 use App\Abilities\AbstractAbility;
 
-abstract class AbstractChampion
+class Champion
 {
     const TYPE_KNIGHT = 'knight';
     const TYPE_MONSTER = 'monster';
@@ -12,7 +12,7 @@ abstract class AbstractChampion
     /** @var string */
     protected $name;
 
-    /** @var int */
+    /** @var float */
     protected $health;
 
     /** @var int */
@@ -30,8 +30,14 @@ abstract class AbstractChampion
     /** @var string */
     protected $type;
 
-    /** @var AbstractAbility[] */
+    /** @var array */
     protected $abilities = [];
+
+    /** @var bool */
+    protected $hasAttackAbilities = false;
+
+    /** @var bool */
+    protected $hasDefenceAbilities = false;
 
     /**
      * @return string
@@ -43,27 +49,27 @@ abstract class AbstractChampion
 
     /**
      * @param string $name
-     * @return AbstractChampion
+     * @return Champion
      */
-    public function setName(string $name): AbstractChampion
+    public function setName(string $name): Champion
     {
         $this->name = $name;
         return $this;
     }
 
     /**
-     * @return int
+     * @return float
      */
-    public function getHealth(): int
+    public function getHealth(): float
     {
         return $this->health;
     }
 
     /**
-     * @param int $health
-     * @return AbstractChampion
+     * @param float $health
+     * @return Champion
      */
-    public function setHealth(int $health): AbstractChampion
+    public function setHealth(float $health): Champion
     {
         $this->health = $health;
         return $this;
@@ -79,9 +85,9 @@ abstract class AbstractChampion
 
     /**
      * @param int $strength
-     * @return AbstractChampion
+     * @return Champion
      */
-    public function setStrength(int $strength): AbstractChampion
+    public function setStrength(int $strength): Champion
     {
         $this->strength = $strength;
         return $this;
@@ -97,9 +103,9 @@ abstract class AbstractChampion
 
     /**
      * @param int $defence
-     * @return AbstractChampion
+     * @return Champion
      */
-    public function setDefence(int $defence): AbstractChampion
+    public function setDefence(int $defence): Champion
     {
         $this->defence = $defence;
         return $this;
@@ -115,9 +121,9 @@ abstract class AbstractChampion
 
     /**
      * @param int $speed
-     * @return AbstractChampion
+     * @return Champion
      */
-    public function setSpeed(int $speed): AbstractChampion
+    public function setSpeed(int $speed): Champion
     {
         $this->speed = $speed;
         return $this;
@@ -133,9 +139,9 @@ abstract class AbstractChampion
 
     /**
      * @param int $luck
-     * @return AbstractChampion
+     * @return Champion
      */
-    public function setLuck(int $luck): AbstractChampion
+    public function setLuck(int $luck): Champion
     {
         $this->luck = $luck;
         return $this;
@@ -151,9 +157,9 @@ abstract class AbstractChampion
 
     /**
      * @param AbstractAbility[] $abilities
-     * @return AbstractChampion
+     * @return Champion
      */
-    public function setAbilities(array $abilities): AbstractChampion
+    public function setAbilities(array $abilities): Champion
     {
         $this->abilities = $abilities;
         return $this;
@@ -169,11 +175,55 @@ abstract class AbstractChampion
 
     /**
      * @param string $type
-     * @return AbstractChampion
+     * @return Champion
      */
-    public function setType(string $type): AbstractChampion
+    public function setType(string $type): Champion
     {
         $this->type = $type;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAlive(): bool
+    {
+        return $this->health > 0;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasAttackAbilities(): bool
+    {
+        return $this->hasAttackAbilities;
+    }
+
+    /**
+     * @param bool $hasAttackAbilities
+     * @return Champion
+     */
+    public function setHasAttackAbilities(bool $hasAttackAbilities): Champion
+    {
+        $this->hasAttackAbilities = $hasAttackAbilities;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasDefenceAbilities(): bool
+    {
+        return $this->hasDefenceAbilities;
+    }
+
+    /**
+     * @param bool $hasDefenceAbilities
+     * @return Champion
+     */
+    public function setHasDefenceAbilities(bool $hasDefenceAbilities): Champion
+    {
+        $this->hasDefenceAbilities = $hasDefenceAbilities;
         return $this;
     }
 }

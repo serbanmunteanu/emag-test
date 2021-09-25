@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'settings' => [
+    'game' => [
         'roundsNumber' => 20
     ],
     'abilities' => [
@@ -14,7 +14,7 @@ return [
         [
             'name' => 'Magic Shield',
             'chance' => 20,
-            'power' => 0.5,
+            'power' => 2,
             'type' => 'defence'
         ]
     ],

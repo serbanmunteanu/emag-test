@@ -2,17 +2,17 @@
 
 namespace App\Champions\Builder;
 
-use App\Champions\AbstractChampion;
+use App\Champions\Champion;
 use Exception;
 
 class Director {
 
     /**
-     * @param AbstractChampionBuilder $builder
-     * @return AbstractChampion
+     * @param ChampionBuilder $builder
+     * @return Champion
      * @throws Exception
      */
-    public function build(AbstractChampionBuilder $builder): AbstractChampion
+    public function build(ChampionBuilder $builder): Champion
     {
         return $builder
             ->createModel()

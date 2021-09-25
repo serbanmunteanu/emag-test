@@ -4,15 +4,9 @@ namespace App;
 
 use App\Abilities\Ability;
 use App\Abilities\AbilityFactory;
-use App\Abilities\AbstractAbility;
-use App\Champions\Builder\AbstractChampionBuilder;
+use App\Champions\Builder\ChampionBuilder;
 use App\Champions\Builder\Director;
-use App\Champions\AbstractChampion;
-use App\Champions\Builder\KnightBuilder;
-use App\Champions\Builder\MonsterBuilder;
-use App\Champions\Knight;
-use App\Champions\Monster;
-use App\Gameplay\Game;
+use App\Champions\Champion;
 use Exception;
 
 class Application {
@@ -23,10 +17,10 @@ class Application {
     /** @var Game */
     protected $game;
 
-    /** @var Knight[] */
+    /** @var Champion[] */
     protected $knights = [];
 
-    /** @var Monster[] */
+    /** @var Champion[] */
     protected $monsters = [];
 
     /** @var Ability[] */
@@ -45,14 +39,26 @@ class Application {
      */
     public function bootstrap(): void
     {
-        $this->loadAbilities();
-        $this->loadChampions();
+        $this
+            ->loadAbilities()
+            ->loadChampions()
+            ->loadGame();
+    }
+
+    /**
+     * @param Champion $champion1
+     * @param Champion $champion2
+     * @throws Exception
+     */
+    public function startGame(Champion $champion1, Champion $champion2): void
+    {
+        $this->game->start($champion1, $champion2);
     }
 
     /**
      *
      */
-    protected function loadAbilities(): void
+    protected function loadAbilities(): Application
     {
         $abilitiesSettings = $this->config['abilities'];
 
@@ -64,48 +70,75 @@ class Application {
                 $ability['type']
             );
         }
+
+        return $this;
     }
 
     /**
      * @throws Exception
      */
-    protected function loadChampions(): void
+    protected function loadChampions(): Application
     {
         $championsSetting = $this->config['champions'];
         $director = new Director();
+        $championBuilder = new ChampionBuilder($this->abilities);
 
         foreach ($championsSetting as $championSettings) {
-            $this->addChampion($championSettings, $director);
+            $this->addChampion($championSettings, $director, $championBuilder);
         }
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    protected function loadGame(): Application
+    {
+        $this->game = new Game($this->config['game']['roundsNumber']);
+        return $this;
     }
 
     /**
      * @param array $championSettings
      * @param Director $director
+     * @param ChampionBuilder $championBuilder
      * @throws Exception
      */
-    protected function addChampion(array $championSettings, Director $director): void
+    protected function addChampion(array $championSettings, Director $director, ChampionBuilder $championBuilder): void
     {
         $championType = $championSettings['type'];
+        $championBuilder->setChampionSettings($championSettings);
+        $champion = $director->build($championBuilder);
+
         switch ($championType) {
-            case AbstractChampion::TYPE_KNIGHT:
+            case Champion::TYPE_KNIGHT:
                 $knights = $this->knights;
-                $champion = $director->build(
-                    new KnightBuilder($championSettings, $this->abilities)
-                );
                 $knights[$champion->getName()] = $champion;
                 $this->knights = $knights;
                 break;
-            case AbstractChampion::TYPE_MONSTER:
+            case Champion::TYPE_MONSTER:
                 $monsters = $this->monsters;
-                $champion = $director->build(
-                    new MonsterBuilder($championSettings, $this->abilities)
-                );
                 $monsters[$champion->getName()] = $champion;
                 $this->monsters = $monsters;
                 break;
             default:
                 throw new Exception("Champion type ${championType} is not supported.");
         }
+    }
+
+    /**
+     * @return Champion[]
+     */
+    public function getKnights(): array
+    {
+        return $this->knights;
+    }
+
+    /**
+     * @return Champion[]
+     */
+    public function getMonsters(): array
+    {
+        return $this->monsters;
     }
 }
