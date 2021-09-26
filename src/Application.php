@@ -91,7 +91,9 @@ class Application
         $championBuilder = new ChampionBuilder($this->abilities);
 
         foreach ($championsSetting as $championSettings) {
-            $this->addChampion($championSettings, $director, $championBuilder);
+            $championBuilder->setChampionSettings($championSettings);
+            $champion = $director->build($championBuilder);
+            $this->addChampion($champion);
         }
         return $this;
     }
@@ -127,16 +129,12 @@ class Application
     }
 
     /**
-     * @param array $championSettings
-     * @param Director $director
-     * @param ChampionBuilder $championBuilder
+     * @param Champion $champion
      * @throws Exception
      */
-    protected function addChampion(array $championSettings, Director $director, ChampionBuilder $championBuilder): void
+    protected function addChampion(Champion $champion): void
     {
-        $championType = $championSettings['type'];
-        $championBuilder->setChampionSettings($championSettings);
-        $champion = $director->build($championBuilder);
+        $championType = $champion->getType();
 
         switch ($championType) {
             case Champion::TYPE_KNIGHT:

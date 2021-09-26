@@ -10,3 +10,5 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 COPY ./composer.* /app/
 RUN composer install --no-dev --prefer-dist --optimize-autoloader && \
     composer clear-cache
+
+CMD php index.php
