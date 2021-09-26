@@ -39,6 +39,9 @@ final class ChampionBuilderTest extends TestCase
         ]
     ];
 
+    /**
+     * It should be a better idea to mock Champion Builder
+     */
     protected function setUp(): void
     {
         parent::setUp();
@@ -71,7 +74,8 @@ final class ChampionBuilderTest extends TestCase
         $this->abstractBuilder = new ChampionBuilder($abilities);
         $this->abstractBuilder
             ->createModel()
-            ->setChampionSettings($this->championSetting);
+            ->setChampionSettings($this->championSetting)
+            ->setModelAbilities();
     }
 
     /** @test */
@@ -80,12 +84,21 @@ final class ChampionBuilderTest extends TestCase
         $this->assertInstanceOf(Champion::class, $this->abstractBuilder->getModel());
     }
 
+    /**
+     * @return ChampionBuilder
+     */
+    public function getAbstractBuild(): ChampionBuilder
+    {
+        return $this->abstractBuilder;
+    }
+
     /** @test
      * @throws Exception
      */
     public function shouldLoadModelWithStats(): void
     {
         $model = $this->abstractBuilder->loadModelWithStats()->getModel();
+
         $this->assertSame($model->getName(), $this->championSetting['name']);
         $this->assertSame($model->getType(), $this->championSetting['type']);
         $this->assertThat(
@@ -123,5 +136,16 @@ final class ChampionBuilderTest extends TestCase
                 $this->lessThanOrEqual($this->championSetting['luck']['max'])
             )
         );
+    }
+
+    /** @test */
+    public function shouldSetModelAbilities(): void
+    {
+        $model = $this->abstractBuilder->getModel();
+        foreach ($model->getAbilities() as $key => $value) {
+            foreach ($value as $ability) {
+                $this->assertContains($ability->getName(), $this->championSetting['abilities']);
+            }
+        }
     }
 }
