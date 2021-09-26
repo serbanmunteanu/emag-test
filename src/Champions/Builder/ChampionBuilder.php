@@ -32,7 +32,7 @@ class ChampionBuilder implements BuilderInterface
      * @return int
      * @throws Exception
      */
-    public function generateRandomValue(string $fieldName): int
+    protected function generateRandomValue(string $fieldName): int
     {
         if (!$this->championSettings[$fieldName] ||
             !$this->championSettings[$fieldName]['min'] ||
@@ -50,7 +50,7 @@ class ChampionBuilder implements BuilderInterface
     /**
      * @return array
      */
-    public function loadAbilities(): array
+    protected function loadModelAbilities(): array
     {
         $abilities = [];
         foreach ($this->availableAbilities as $availableAbility) {
@@ -105,7 +105,7 @@ class ChampionBuilder implements BuilderInterface
      */
     public function setModelAbilities(): ChampionBuilder
     {
-        $abilities = $this->loadAbilities();
+        $abilities = $this->loadModelAbilities();
         if (!empty($abilities)) {
             if (!empty($abilities[AbstractAbility::TYPE_ATTACK])) {
                 $this->champion->setHasAttackAbilities(true);
@@ -114,7 +114,7 @@ class ChampionBuilder implements BuilderInterface
                 $this->champion->setHasDefenceAbilities(true);
             }
         }
-        $this->champion->setAbilities($this->loadAbilities());
+        $this->champion->setAbilities($abilities);
         return $this;
     }
 
