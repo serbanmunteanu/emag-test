@@ -1,9 +1,9 @@
 # eMAG's Hero
 
-###Description
+### Description
 Once upon a time there was a great hero, called Orderus, with some strengths and weaknesses, as all heroes have. Orderus walks the ever-green forests of Emagia, he encounters some wild beasts and need to fight with them.
 
-###Installation
+### Installation
 Application is running on docker container, for install just:
 
 ```
@@ -16,7 +16,7 @@ php index.php
 ```
 >*Note: this action require PHP 7.4 or greater
 
-###Usage
+### Usage
 After you run one of the commands you can find the output of the game in **src/Output/Logs/game.log**
 
 If you switch to option *cli* for output you must enter into docker container like this:
@@ -28,7 +28,7 @@ docker exec -ti *containerId* bash
 ```
 The output of the game will be displayed in the console.
 
-###Architecture
+### Architecture
 The Application contain 5 component:
 
 - Ability
@@ -50,14 +50,14 @@ The main logic behind is to being able to add any abilities and any champions th
 
 On application bootstrap all the abilities are being loaded from config and after that the champions are built with desire stats and abilities. The champions are initially saved in the application properties depending on their type (knights or monsters) and ready to be picked in for the game.
 
-###Features
+### Features
 - All champions could have abilities customizable by config
 - A game could have any number of rounds
 - East to add new abilities
 - Easy to add new champion
 - Multiple display options
 
-###Enhancements
+### Enhancements
 - Redefine test to use mocks
 - Add a cache layer to acting like a database to see all the results
 - Add Champion properties XP and increase after every battle to being able to unlock new abilities
